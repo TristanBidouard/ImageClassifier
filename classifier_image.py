@@ -1,36 +1,3 @@
-# Copyright 2015 The TensorFlow Authors. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
-"""Simple image classification with Inception.
-
-Run image classification with Inception trained on ImageNet 2012 Challenge data
-set.
-
-This program creates a graph from a saved GraphDef protocol buffer,
-and runs inference on an input JPEG image. It outputs human readable
-strings of the top 5 predictions along with their probabilities.
-
-Change the --image_file argument to any jpg image to compute a
-classification of that image.
-
-Please see the tutorial and website for a detailed description of how
-to use this script to perform image recognition.
-
-https://tensorflow.org/tutorials/image_recognition/
-"""
-
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -50,9 +17,8 @@ from decimal import *
 
 FLAGS = None
 
-# pylint: disable=line-too-long
 DATA_URL = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-12-05.tgz'
-# pylint: enable=line-too-long
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
 gs = goslate.Goslate()
 
@@ -138,12 +104,13 @@ def run_inference_on_image(image):
     image: Image file name.
 
   Returns:
-    Nothing
+    Image genearated
   """
   if not tf.gfile.Exists(image):
     tf.logging.fatal('File does not exist %s', image)
   image_data = tf.gfile.FastGFile(image, 'rb').read()
 
+  #Create image
   img = cv2.imread(image, cv2.IMREAD_COLOR)
   img = windows(img)
 
@@ -173,6 +140,8 @@ def run_inference_on_image(image):
       i = i + 1
       human_string = node_lookup.id_to_string(node_id)
       score = predictions[node_id]
+
+      #Terminal display
       #human_string_fr = gs.translate(human_string, 'fr')
       #l = len(human_string)
       #print('[%d] - %s (%.2f%%)' % (i, human_string, score*100))
@@ -181,6 +150,8 @@ def run_inference_on_image(image):
       print('[%d] - %s' % (i, human_string))
       display(score)
       print('  (%.2f%%)' % (score*100))
+
+      #Image display
       img = label(img, human_string, i, score)
 
   return img
@@ -208,6 +179,9 @@ def maybe_download_and_extract():
 def windows(img):
 
   """
+
+  Create the result windows on the image
+
   x1,y1 ------
   |          |
   |          |
@@ -239,6 +213,9 @@ def windows(img):
 
 def label(img, text, i, score):
 
+  """
+  Create the label and the rate of the results 
+  """
   text = text.split(',')[0]
 
   font = cv2.FONT_HERSHEY_DUPLEX
@@ -299,6 +276,9 @@ def label(img, text, i, score):
 
 def display(num):
 
+  """
+  Terminal display
+  """
   scale = 150
   num_scale = round(num * scale)
   """i = 0
@@ -317,17 +297,19 @@ def display(num):
     print(".", end='')
   print("]", end='')
 
+
+
+
 def main(_):
+
   maybe_download_and_extract()
   image = (FLAGS.image_file if FLAGS.image_file else
            os.path.join(FLAGS.model_dir, 'cropped_panda.jpg'))
-  #os.system("open " + image)
   img = run_inference_on_image(image)
   print("\n\n")
   cv2.imshow('image',img)
   cv2.waitKey(0)
   cv2.destroyAllWindows()
-  #display_image(image)
 
 
 
