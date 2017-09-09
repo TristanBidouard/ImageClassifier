@@ -317,56 +317,6 @@ def display(num):
     print(".", end='')
   print("]", end='')
 
-
-def display_image(image):
-  img = cv2.imread(image, cv2.IMREAD_COLOR)
-  
-  """ 
-  cv2.rectangle(img, (x1, y1), (x2, y2), (255,0,0), 2)
-
-
-  x1,y1 ------
-  |          |
-  |          |
-  |          |
-  --------x2,y2
-
-
-  """
-  height, width, _ = img.shape
-  x1 = width - 250
-  y1 = height - 125
-  x2 = width - 20
-  y2 = height - 20
-  font = cv2.FONT_HERSHEY_DUPLEX
-  font_scale = 0.4
-  color = (0, 150, 0)
-  text = "Bonjour"
-  text_thickness = 1
-  rate = 0.75
-  x1_rect_true = int(round((x2 - x1) / 2))
-  x2_rect = (x2 - x1) - 5
-  x1_rect_false = int(round(rate * ((x1 + x2_rect) - (x1 + x1_rect_true))))
-  false_color = (0, 0, 150)
-
-
-  text_width, text_height = cv2.getTextSize(text, font, font_scale, text_thickness)[0] 
-  cv2.rectangle(img, (x1, y1), (x2, y2), (200, 200, 200), -1)
-  cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
-
-  cv2.putText(img, text, ((x1 + 5), (y1 + text_height + 5)), font, font_scale, color , text_thickness)
-  cv2.rectangle(img, ((x1 + x1_rect_true), (y1 + 5)), ((x1 + x2_rect), (y1 + text_height + 5)), color, -1)
-  cv2.rectangle(img, ((x1 + x1_rect_true + x1_rect_false), (y1 + 5)), ((x1 + x2_rect), (y1 + text_height + 5)), false_color, -1)
-
-  text_width, text_height = cv2.getTextSize(str(rate), font, font_scale, text_thickness)[0]
-  cv2.putText(img, str(rate*100)+"%", ((x1 + x1_rect_true + 5), (y1 + text_height + 5)), font, font_scale, (0, 100, 0), text_thickness)
-
-
-  cv2.imshow('image',img)
-  cv2.waitKey(0)
-  cv2.destroyAllWindows()
-
-
 def main(_):
   maybe_download_and_extract()
   image = (FLAGS.image_file if FLAGS.image_file else
